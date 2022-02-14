@@ -74,5 +74,5 @@ class Configurable:
 
 
     def __init__(self, filename: str = f'{Path(argv[0]).stem}.toml'):
-        self.config_file = Path(filename)
+        if not hasattr(self, 'config_file'): self.config_file = Path(filename)
         self.reload_config()

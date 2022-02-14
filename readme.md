@@ -1,22 +1,14 @@
-# Python Config Files
+# pyfigure
 
-Generate configuration files for Python classes.
+Generate configuration files for classes.
 
-## Requirements
+## Installation
 
-The only requirement (currently) for the project is `tomlkit`, which you can get by running
-
-`pip install tomlkit`
-
-or
-
-`pip install -r requirements.txt`
-
-using this repository as a starting point.
+`pip install pyfigure`
 
 ## Usage
 
-To generate a configuration file for a class, you must extend the class with `Configurable`, from the `config` module.
+To generate a configuration file for a class, you must extend the class with `Configurable`, from the `pyfigure` module.
 
 Then, to add options to the configuration, create a new `Config` class, and add variables of the `Option` class.
 
@@ -40,7 +32,7 @@ option_name: Option(
 
 `file.py`
 ```py
-from config import Configurable, Option
+from pyfigure import Configurable, Option
 
 class SomeClass(Configurable):
 
@@ -76,4 +68,4 @@ def __init__(self):
 
 ## To-Do
 
-- Rework the type checking system to utilize the `typing` library.
+- Rework the type checking system to utilize the `typing` library. Somehow.

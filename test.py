@@ -1,4 +1,4 @@
-from config import Configurable, Option
+from pyfigure import Configurable, Option
 
 class SomeClass(Configurable):
 

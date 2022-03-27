@@ -6,7 +6,7 @@ with open('README.md', 'r', encoding='utf-8') as file:
 setup(
 
     name = 'pyfigure',
-    version = '1.0.0',
+    version = '1.0.2',
     description = "Generate configuration files for classes.",
     url = 'http://github.com/Soumeh/pyfigure',
     author = "Soumeh",
@@ -14,7 +14,6 @@ setup(
     install_requires = [
         'tomlkit',
     ],
-    zip_safe = False,
     long_description = long_description,
     long_description_content_type = 'text/markdown',
     project_urls = {

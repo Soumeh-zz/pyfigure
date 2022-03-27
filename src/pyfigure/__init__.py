@@ -40,7 +40,11 @@ class Configurable:
 
     def reload_config(self):
         # default values
-        self.defaults = self.Config.__annotations__
+        try:
+            self.defaults = self.Config.__annotations__
+        except AttributeError:
+            self.config = {}
+            return
         self.config = parse("")
         for key, value in self.defaults.items():
             self.add_to_config(key, value.default, value.description)

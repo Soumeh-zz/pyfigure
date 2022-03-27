@@ -3,7 +3,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-     - name: Publish to PyPI
      - uses: actions/checkout@v2
      - uses: actions/setup-python@v2
      - uses: casperdcl/deploy-pypi@v2

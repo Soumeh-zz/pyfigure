@@ -13,12 +13,15 @@ class Option:
 
 class Configurable:
 
+    defaults = {}
+    def __init__(self, file: Path = Path(argv[0]).with_suffix('').with_suffix('.toml')):
+        self.config = table()
+        self.config_file = file
+        self.reload_config()
+
     @dataclass
     class Config:
         pass
-
-    defaults = {}
-    config = table()
 
     def add_to_config(self, key, value, comment):
         self.config[key] = value
@@ -35,10 +38,7 @@ class Configurable:
         with open(self.config_file, 'r') as file:
             self.config = load(file)
         if 'config' in self.config: self.config = self.config['config']
-        #for key, value in self.config.items():
-        #    if isinstance(value, dict):
-        #        del self.config[value.key()]
-        #        self.config[value.key()] = value.value()
+
         different = False
         for key, value in self.defaults.items():
             if key not in self.config:
@@ -51,7 +51,7 @@ class Configurable:
         try:
             self.defaults = self.Config.__annotations__
         except AttributeError:
-            self.config = table()
+            self.config = {}
             return
         for key, value in self.defaults.items():
             self.add_to_config(key, value.default, value.description)
@@ -62,7 +62,6 @@ class Configurable:
         else:
             self.load_from_file()
 
-        self.config = dict(self.config)
         # parse values
         for key, value in self.config.items():
             if key not in self.defaults:
@@ -82,8 +81,3 @@ class Configurable:
     def parse_error(self, option, message):
         print(f"Error while trying to load option '{option}': {message}")
         self.config[option] = self.defaults[option].default
-
-
-    def __init__(self, filename: str = f'{Path(argv[0]).stem}.toml'):
-        if not hasattr(self, 'config_file'): self.config_file = Path(filename)
-        self.reload_config()

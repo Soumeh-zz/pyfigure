@@ -1,5 +1,5 @@
 from pathlib import Path
-from tomlkit import load, parse, dump
+from tomlkit import document, load, dump, table
 from typing import Callable, Any
 from dataclasses import dataclass
 from sys import argv
@@ -18,34 +18,41 @@ class Configurable:
         pass
 
     defaults = {}
-    config = {}
+    config = table()
 
     def add_to_config(self, key, value, comment):
         self.config[key] = value
-        if comment: self.config[key].comment(comment)
+        if comment:
+            self.config.value.item(key).comment(comment)
 
     def save_to_file(self):
         with open(self.config_file, 'w+') as file:
-            dump(self.config, file)
+            doc = document()
+            doc['config'] = self.config
+            dump(doc, file)
 
     def load_from_file(self):
         with open(self.config_file, 'r') as file:
             self.config = load(file)
-        i=0
+        if 'config' in self.config: self.config = self.config['config']
+        #for key, value in self.config.items():
+        #    if isinstance(value, dict):
+        #        del self.config[value.key()]
+        #        self.config[value.key()] = value.value()
+        different = False
         for key, value in self.defaults.items():
             if key not in self.config:
-                i+=1
+                different = True
                 self.add_to_config(key, value.default, value.description)
-        if i: self.save_to_file()
+        if different: self.save_to_file()
 
     def reload_config(self):
         # default values
         try:
             self.defaults = self.Config.__annotations__
         except AttributeError:
-            self.config = {}
+            self.config = table()
             return
-        self.config = parse("")
         for key, value in self.defaults.items():
             self.add_to_config(key, value.default, value.description)
 

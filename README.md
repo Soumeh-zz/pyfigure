@@ -68,4 +68,5 @@ def __init__(self):
 
 ## To-Do
 
-- Rework the type checking system to utilize the `typing` library. Somehow.
+- Rework the type checking system to utilize the `typing` library (Somehow).
+- Support nested dictionaries.

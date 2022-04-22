@@ -1,0 +1,5 @@
+[config]
+string_option = "default" # Any string works here.
+integer_option = 24 # Any integer here.
+float_option = 15.55 # Any float.
+bool_option = true # Any boolean.

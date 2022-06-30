@@ -86,8 +86,3 @@ int_list_option = [1, 2, 3] # A list of integers.
 choice_option = "spam" # A list of random things
 
 ```
-
-## To-Do
-
-- ~~Rework the type checking system to utilize the `typing` library (Somehow).~~ Done, the project now depends on [typeguard](https://github.com/agronholm/typeguard).
-- Support nested dictionaries.

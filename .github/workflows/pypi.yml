@@ -8,6 +8,6 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v2
       - name: Publish to PYPI
-        uses: casperdcl/deploy-pypi@v2
+        uses: etils-actions/pypi-auto-publish@v1.2.0
         with:
-          password: ${{ secrets.PYPI_API_TOKEN }}
+          pypi-token: ${{ secrets.PYPI_API_TOKEN }}

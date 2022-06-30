@@ -33,40 +33,59 @@ option_name: Option(
 `file.py`
 ```py
 from pyfigure import Configurable, Option
+from typing import Literal, List
 
-class SomeClass(Configurable):
+class ExampleClass(Configurable):
+
+    #config_file = 'other_file.toml'
 
     class Config:
-        string_option: Option("default", str, description="Any string works here.")
-        integer_option: Option(24, int, description="Any integer here.")
-        float_option: Option(15.55, float, description="Any float.")
-    
-    def __init__(self):
-        super().__init__()
-        print(self.config)
-        # {'string_option': 'default', 'integer_option': 24, 'float_option': 15.55}
+        string_option: str = Option("default", "Any string works here.")
+        integer_option: int = Option(24, "Any integer here.")
+        float_option: float = Option(15.55, "Any float.")
+        bool_option: bool = Option(True, "Any boolean.")
+        list_option: list = Option(['e', 'a', 'o'], "A list of things.")
+        int_list_option: List[int] = Option([1, 2, 3], 'A list of integers.')
+        choice_option: Literal['spam', 'eggs'] = Option('spam', "A list of random things")
 
-SomeClass()
+    def __init__(self):
+        Configurable.__init__(self)
+        print(self.config)
+
+
+ExampleClass()
 ```
 
-This class, when initialized, will create a new file named:
+This class, when initialized, will print:
+
+```py
+{
+	'string_option': 'default',
+	'integer_option': 24,
+	'float_option': 15.55,
+	'bool_option': True,
+	'list_option': ['e', 'a', 'o'],
+	'int_list_option': [1, 2, 3],
+	'choice_option': 'spam'
+}
+```
+
+And create a new file:
 
 `file.toml`
 ```toml
+[config]
 string_option = "default" # Any string works here.
 integer_option = 24 # Any integer here.
 float_option = 15.55 # Any float.
-```
+bool_option = true # Any boolean.
+list_option = ["e", "a", "o"] # A list of things.
+int_list_option = [1, 2, 3] # A list of integers.
+choice_option = "spam" # A list of random things
 
-> Need to place the file at a different location?
-Simply pass an argument in the `super().__init__()` function.
-
-```py
-def __init__(self):
-    super().__init__('new/location/file.toml')
 ```
 
 ## To-Do
 
-- Rework the type checking system to utilize the `typing` library (Somehow).
+- ~~Rework the type checking system to utilize the `typing` library (Somehow).~~ Done, the project now depends on [typeguard](https://github.com/agronholm/typeguard).
 - Support nested dictionaries.

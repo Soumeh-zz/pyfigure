@@ -13,22 +13,24 @@ To generate a configuration file for a class, you must extend the class with `Co
 Then, to add options to the configuration, create a new `Config` class, and add variables of the `Option` class.
 
 ```py
-option_name: Option(
-    default,
-    type,
-    parse,
-    description,
-)
+class YourClass(Configurable):
+
+    class Config:
+
+        option_name: type = Option(
+            default,
+            parse,
+            description,
+        )
 ```
 
 ### Where the arguments are as follows:
 
-|argument|description|default value|
-|-|-|-|
-`default`|The default value of the option|`n/a`
-`type`|The python type the option is|`str`
-`parse`|A function that parses the given value, returns a new value or throws an exception|`lambda x: x`
-`description`|A comment to explain what the option is for|`n/a`
+|argument|description
+|-|-
+`default`|The default value of the option
+`description`|A comment to explain what the option is for
+`parse`|A function that parses the given value, returns a new value or throws an exception
 
 `file.py`
 ```py

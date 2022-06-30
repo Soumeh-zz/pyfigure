@@ -6,7 +6,9 @@ jobs:
      - uses: actions/checkout@v2
      - uses: actions/setup-python@v2
      - name: make empty setup file
-       run: touch setup.cfg
+       run: | 
+         STR="from setuptools import setup \nsetup()"
+         echo -e $STR > setup.py
      - uses: etils-actions/pypi-auto-publish@v1.2.0
        with:
          pypi-token: ${{ secrets.PYPI_API_TOKEN }}

@@ -11,3 +11,4 @@ jobs:
         uses: etils-actions/pypi-auto-publish@v1.2.0
         with:
           pypi-token: ${{ secrets.PYPI_API_TOKEN }}
+          pkg-name: pyfigure

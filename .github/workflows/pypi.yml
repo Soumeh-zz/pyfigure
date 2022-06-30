@@ -5,8 +5,6 @@ jobs:
     steps:
      - uses: actions/checkout@v2
      - uses: actions/setup-python@v2
-     - uses: casperdcl/deploy-pypi@v2
+     - uses: etils-actions/pypi-auto-publish@v1.2.0
        with:
-         password: ${{ secrets.PYPI_API_TOKEN }}
-         build: true
-         pip: install .
+         pypi-token: ${{ secrets.PYPI_API_TOKEN }}

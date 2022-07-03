@@ -2,6 +2,7 @@ from pathlib import Path
 from typing import Callable, Any
 from dataclasses import dataclass
 from sys import argv
+from inspect import isclass
 
 from tomlkit import document, load, dump, table
 from typeguard import check_type
@@ -28,62 +29,80 @@ class Configurable:
     def reload_config(self):
         # set default values
         self._defaults = {}
-        for key, default_type in self.Config.__dict__['__annotations__'].items():
-            self._defaults[key] = self.Config.__dict__[key]
-            self._defaults[key].default_type = default_type
+        self._generate_config(self.Config, self._defaults)
 
         # get config values
         if self.config_file.exists():
             self._load_config()
-            self._add_to_config()
-        else:
-            self._add_to_config()
+            self._append_default(self._defaults, self.config)
             self._save_config()
+            self._parse_config(self._defaults, self.config)
+        else:
+            self._append_default(self._defaults, self.config)
+            self._parse_config(self._defaults, self.config)
+            self._save_config()
+        
+        del self._defaults
 
-        # parse values
-        for key, value in self.config.items():
+    def _save_config(self):
+        with open(self.config_file, 'w+') as file:
+            dump(self.config, file)
 
-            if key not in self._defaults:
+    def _load_config(self):
+        with open(self.config_file, 'r') as file:
+            for key, value in load(file).items():
+                self.config[key] = value
+
+    def _append_default(self, nest, destination):
+        for key, value in nest.items():
+
+            if isinstance(value, dict):
+                if not key in destination: destination[key] = table()
+                self._append_default(nest[key], destination[key])
                 continue
-            data = self._defaults[key]
+
+            if key in destination: continue
+            destination[key] = value.default
+            if value.description:
+                destination.value.item(key).comment(value.description)
+
+    def _parse_config(self, nest, destination):
+        for key, value in destination.items():
+
+            if isinstance(value, dict):
+                if key not in nest: continue
+                self._parse_config(nest[key], destination[key])
+                continue
+
+            if key not in nest:
+                continue
+            data = nest[key]
 
             try:
                 check_type(key, value, data.default_type)
             except TypeError as error:
+                value = data.default
                 self._parse_error(key, error)
 
             try:
                 value = data.parse(value)
             except Exception as error:
+                value = data.default
                 self._parse_error(key, error)
-                continue
 
-            self.config[key] = value
-            setattr(self.config, key, value)
+            destination[key] = value
+            setattr(destination, key, value)
+            if hasattr(value, 'description'):
+                destination.value.item(key).comment(value.description)
 
-        del self._defaults
-
-    def _save_config(self):
-        with open(self.config_file, 'w+') as file:
-            doc = document()
-            doc['config'] = self.config
-            dump(doc, file)
-
-    def _load_config(self):
-        with open(self.config_file, 'r') as file:
-            self.config = load(file)
-        if 'config' in self.config: self.config = self.config['config']
-
-    def _add_to_config(self):
-        different = False
-        for key, value in self._defaults.items():
-            if key not in self.config:
-                different = True
-                self.config[key] = value.default
-                if value.description:
-                    self.config.value.item(key).comment(value.description)
-        if different: self._save_config()
+    def _generate_config(self, nest, destination):
+        for key, default_type in nest.__dict__['__annotations__'].items():
+            destination[key] = nest.__dict__[key]
+            destination[key].default_type = default_type
+        for nest in nest.__dict__.values():
+            if not isclass(nest): continue
+            destination[nest.__name__] = {}
+            self._generate_config(nest, destination[nest.__name__])
 
     def _parse_error(self, option, message):
         print(f"Error while trying to load option '{option}': {message}")
-        self.config[option] = self._defaults[option].default

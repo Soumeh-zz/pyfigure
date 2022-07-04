@@ -96,9 +96,10 @@ class Configurable:
                 destination.value.item(key).comment(value.description)
 
     def _generate_config(self, nest, destination):
-        for key, default_type in nest.__dict__['__annotations__'].items():
-            destination[key] = nest.__dict__[key]
-            destination[key].default_type = default_type
+        if '__annotations__' in nest.__dict__:
+            for key, default_type in nest.__dict__['__annotations__'].items():
+                destination[key] = nest.__dict__[key]
+                destination[key].default_type = default_type
         for nest in nest.__dict__.values():
             if not isclass(nest): continue
             destination[nest.__name__] = {}

@@ -117,7 +117,16 @@ class Configurable:
 
         # get config values and default values
         values = dict(nest.__dict__)
-        defaults = values['__annotations__']
+
+        # remove non-values
+        for key, _ in values.copy().items():
+            if key.startswith('__'):
+                del values[key]
+
+        # stop if no values
+        if not values: return
+
+        defaults = nest.__dict__['__annotations__']
 
         # remove non-values
         for key, _ in values.copy().items():

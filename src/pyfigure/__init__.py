@@ -116,12 +116,7 @@ class Configurable:
     def _generate_config(self, nest, destination):
 
         # get config values and default values
-        values = dict(nest.__dict__)
-
-        # remove non-values
-        for key, _ in values.copy().items():
-            if key.startswith('__'):
-                del values[key]
+        values = {_:value for _, value in nest.__dict__.items() if isinstance(value, Option)}
 
         # stop if no values
         if not values: return

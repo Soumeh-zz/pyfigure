@@ -1,7 +1,7 @@
 [project]
 name = "pyfigure"
 description = "Generate configuration files for classes."
-version = "2.3"
+version = "2.4"
 authors = [
     { name = "Stefan Nešić" }
 ]

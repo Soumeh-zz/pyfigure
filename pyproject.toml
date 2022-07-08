@@ -1,7 +1,7 @@
 [project]
 name = "pyfigure"
 description = "Generate configuration files for classes."
-version = "2.1"
+version = "2.2"
 authors = [
     { name = "Stefan Nešić" }
 ]
@@ -22,7 +22,8 @@ classifiers = [
 
 dependencies = [
     "tomlkit",
-    "typeguard"
+    "typeguard",
+    "superdict"
 ]
 
 [build-system]

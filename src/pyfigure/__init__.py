@@ -57,6 +57,7 @@ class Configurable:
         del self._defaults
 
     def _save_config(self):
+        if not self.config_file.parent.exists(): self.config_file.parent.mkdir(parents=True, exist_ok=True)
         with open(self.config_file, 'w+') as file:
             dump(self.config, file)
 
